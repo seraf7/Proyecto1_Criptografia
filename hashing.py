@@ -1,3 +1,11 @@
+#Criptografía 2021-1
+#Castillo López Humberto Serafín
+#García Racilla Sandra
+#Sánchez Escobar Fernando
+#Ejecuta todos los algoritmos de hashing
+#SHA2-384, SHA2-512, SHA2-384, SHA3-512
+#Muestra la tabla de los tiempos de cada uno de los algoritmos por los vectores de prueba
+#Además del promedio de tiempo
 import sys
 import os 
 import pandas as pd
@@ -103,6 +111,7 @@ for vector in archivo:
 			sha2_512(vector.strip('\n'))
 			sha3_384(vector.strip('\n'))
 			sha3_512(vector.strip('\n'))
+archivo.close()
 			
 
 

@@ -24,6 +24,6 @@ print(key_object)
 key_object2 = RSA.construct((n,e,d,np1,np2,coef),consistency_check=True)
 cipher = PKCS1_OAEP.new(key_object2)
 message = cipher.decrypt(ciphertext)
-print(message)
-salida=message.decode()
+
+salida=message.hex()
 print(salida)

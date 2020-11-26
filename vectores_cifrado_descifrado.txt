@@ -1,0 +1,3 @@
+#Vectores de prueba cifrado-descifrado
+#
+plain = 014730f80ac625fe84f026c60bfd547d
