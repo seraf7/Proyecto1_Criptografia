@@ -23,7 +23,7 @@ def sha2_384(M):
 	sha.update(M)
 	#Tomamos el tiempo en que termina la ejecución del hash
 	t1 = default_timer()
-	t_SHA2_384.append(format(t1-t0))
+	t_SHA2_384.append("{0:0.10f}".format(t1-t0))
 
 
 ##Algoritmo SHA2_512
@@ -37,7 +37,7 @@ def sha2_512(M):
 	result = hashlib.sha512(M) 
 	#Tomamos el tiempo en que termina la ejecución del hash
 	t1 = default_timer()
-	t_SHA2_512.append(format(t1-t0))  
+	t_SHA2_512.append("{0:0.10f}".format(t1-t0))  
 
 ##Algoritmo SHA3_384
 def sha3_384(M):
@@ -51,7 +51,7 @@ def sha3_384(M):
 	h_obj.update(M)
 	#Tomamos el tiempo en que termina la ejecución del hash
 	t1 = default_timer()
-	t_SHA3_384.append(format(t1-t0))
+	t_SHA3_384.append("{0:0.10f}".format(t1-t0))
 
 ##Algoritmo SHA3_512
 def sha3_512(M):
@@ -65,7 +65,7 @@ def sha3_512(M):
 	#Tomamos el tiempo en que termina la ejecución del hash
 	t1 = default_timer() 
 	#Se imprime el tiempo total de ejecución del hash el cual es t1-t0
-	t_SHA3_512.append(format(t1-t0))
+	t_SHA3_512.append("{0:0.10f}".format(t1-t0))
 
 def impresion():
 	valores = {"Vectores": len_vectores,"SHA2_384": t_SHA2_384,"SHA2_512": t_SHA2_512, "SHA3_384": t_SHA3_384, "SHA3_512": t_SHA3_512}
@@ -77,7 +77,7 @@ def promedio(lista):
 	suma=0.0
 	for valor in lista:
 		suma+=float(valor)
-	return float(suma/cont)
+	return "{0:0.10f}".format(float(suma/cont))
 
 #Contador de vectores
 cont=0
