@@ -1,0 +1,11 @@
+#Criptografía 2021-1
+#Castillo López Humberto Serafín
+#García Racilla Sandra
+#Sánchez Escobar Fernando
+#Vectores de Prueba para SIGN y Verify
+#Se tomaron como ejemplo los vectores de prueba de SHA3-512 por que tienen mayor variación de tamaños
+#En este archivo se pueden hacer comentarios anteponiendo el símbolo '#'
+#Len: Tamaño del mensaje de prueba
+#El párrafo siguiente es el mensaje de prueba
+#NOTA: No acepta salto de línea '\n' en el archivo, de otra forma marca error 
+Msg = 3b46736d559bd4e0c2c1b2553a33ad3c6cf23cac998d3d0c0e8fa4b19bca06f2f386db2dcff9dca4f40ad8f561ffc308b46c5f31a7735b5fa7e0f9e6cb512e63d7eea05538d66a75cd0d4234b5ccf6c1715ccaaf9cdc0a2228135f716ee9bdee7fc13ec27a03a6d11c5c5b3685f51900b1337153bc6c4e8f52920c33fa37f4e7
