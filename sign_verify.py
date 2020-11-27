@@ -77,7 +77,7 @@ def rsa_pps(m):
 	#Tomamos el tiempo en que inicia la ejecución de la verificación
 	t0 = default_timer()
 	#Generacion del hash
-	hr = SHA256.new(m)
+	hr = SHA1.new(m)
 	#Objeto verificador
 	verifier = pss.new(kp2)
 	try:
