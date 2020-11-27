@@ -125,10 +125,10 @@ def rsa_oaep(message):
 	
 	###Cifrado
 	#Tomamos el tiempo en que inicia la ejecución del cifrado
-	t0 = default_timer()
-	#Creación objeto de llave RSA
 	#RSA.construct(n,e,d,n(p)1,n(p)2,coef)
 	key_object=RSA.construct((n,e,d,np1,np2,coef),consistency_check=True)
+	t0 = default_timer()
+	#Creación objeto de llave RSA
 	cipher = PKCS1_OAEP.new(key_object)
 	ciphertext = cipher.encrypt(message) 
 	#Tomamos el tiempo en que termina la ejecución del cifrado
@@ -141,11 +141,11 @@ def rsa_oaep(message):
 
 
 	###Descifrado
+	#RSA.construct(n,e,d,n(p)1,n(p)2,coef)
+	key_object2 = RSA.construct((n,e,d,np1,np2,coef),consistency_check=True)
 	#Tomamos el tiempo en que inicia la ejecución del descifrado
 	t0 = default_timer()
 	#Creación objeto de llave RSA
-	#RSA.construct(n,e,d,n(p)1,n(p)2,coef)
-	key_object2 = RSA.construct((n,e,d,np1,np2,coef),consistency_check=True)
 	cipher = PKCS1_OAEP.new(key_object2)
 	message = cipher.decrypt(ciphertext)
 	#Tomamos el tiempo en que termina la ejecución del descifrado

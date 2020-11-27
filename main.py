@@ -8,6 +8,8 @@
 import sys
 import os 
 
+print(sys.version_info)
+
 ####Instalación de Bibliotecas necesarias para el proyecto
 #si no cuenta con alguno, descomente las líneas para su ejecución
 #os.system('pip install pandas')
