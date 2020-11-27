@@ -6,8 +6,9 @@
 #RSA-PSS, DSA, ECDSA Prime Field, ECDSA Binary Field
 #Muestra la tabla de los tiempos de cada uno de los algoritmos por los vectores de prueba
 #Además del promedio de tiempo
+import pylab as pl
 import sys
-import os 
+import os
 import pandas as pd
 #Importamos la función default_timer de la librería timeit, esta nos ayudará a
 #tomar los tiempos de ejcución
@@ -25,7 +26,6 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.asymmetric import utils
 from cryptography.hazmat.primitives import hashes
 from cryptography import exceptions
-
 
 
 def rsa_pps(m):
@@ -57,20 +57,20 @@ def rsa_pps(m):
 	#Mensaje
 	m = bytes.fromhex(m)
 	##Signing
-	#Tomamos el tiempo en que inicia la ejecución de la firma
-	t0 = default_timer()
 	#Generacion de llave privada
 	kp = RSA.construct(comp, consistency_check=True)
+	#Tomamos el tiempo en que inicia la ejecución de la firma
+	t0 = default_timer()
 	#Generacion del hash
 	h = SHA256.new(m)
 	#Mensaje firmado
 	s = pss.new(kp).sign(h)
 	#Tomamos el tiempo en que termina la ejecución de la firma
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución de la firma el cual es t1-t0
 	t_s_rsa_pps.append("{0:0.10f}".format(t1-t0))
-	
-	
+
+
 	#Generacion de llave privada
 	kp2 = RSA.construct(comp, consistency_check=True)
 	#Verificacion del mensaje
@@ -86,9 +86,8 @@ def rsa_pps(m):
 	except(ValueError, TypeError):
 	   #print("La firma no es autentica")
 	   pass
-	
 	#Tomamos el tiempo en que termina la ejecución de la verificación
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución de la verificación el cual es t1-t0
 	t_v_rsa_pps.append("{0:0.10f}".format(t1-t0))
 
@@ -105,28 +104,28 @@ def dsa(message):
 	#Mensaje
 	message = bytes.fromhex(message)
 	##Signing
-	#Tomamos el tiempo en que inicia la ejecución de la firma
-	t0 = default_timer()
 	#Creación de un objeto de llave DSA
 	#Crypto.PublicKey.DSA.construct(y,g,p,q,x)
 	K=DSA.construct((y,g,p,q,x),consistency_check=True)
+	#Tomamos el tiempo en que inicia la ejecución de la firma
+	t0 = default_timer()
 	#Hash del mensaje
 	hash_obj = SHA1.new(message)
 	#Firma del mensaje
 	signer = DSS.new(K, 'fips-186-3')
 	signature = signer.sign(hash_obj)
 	#Tomamos el tiempo en que termina la ejecución de la firma
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución de la firma el cual es t1-t0
 	t_s_dsa.append("{0:0.10f}".format(t1-t0))
 
 	###Para Verificar###
+	##Carga de llave pública
+	pub_key = DSA.import_key(K.publickey().export_key())
 	#Tomamos el tiempo en que inicia la ejecución de la verifición
 	t0 = default_timer()
 	#Hash del mensaje
 	hash_obj_ver = SHA1.new(message)
-	##Carga de llave pública
-	pub_key = DSA.import_key(K.publickey().export_key())
 	#Verificamos Firma
 	verifier = DSS.new(pub_key, 'fips-186-3')
 
@@ -138,14 +137,14 @@ def dsa(message):
 	    #print ("The message is not authentic.")
 	    pass
 	#Tomamos el tiempo en que termina la ejecución de la firma
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución de la firma el cual es t1-t0
 	t_v_dsa.append("{0:0.10f}".format(t1-t0))
 
 def ecdsa_bf(m):
 	global t_s_ecdsa_bf
 	global t_v_ecdsa_bf
-	
+
 	#Valor escalar secreto
 	d = "0C16F58550D824ED7B95569D4445375D3A490BC7E0194C41A39DEB732C29396CDF1D66DE02DD1460A816606F3BEC0F32202C7BD18A32D87506466AA92032F1314ED7B19762B0D22"
 	d = int(d, 16)
@@ -157,35 +156,29 @@ def ecdsa_bf(m):
 	Uy = int(Uy, 16)
 
 	#Mensaje
-	#m = bytes(m, 'utf-8')
 	#Alternativa de conversion, para mensajes hexadecimales
 	m = bytes.fromhex(m)
 
-	#Tomamos el tiempo en que inicia la ejecución de la firma
-	t0 = default_timer()
 	#Instancia de la curva NIST K-571
 	E = ec.SECT571K1()
 	#Generacion de la llave publica
 	pubs = ec.EllipticCurvePublicNumbers(x=Ux, y=Uy, curve=E)
 	kPub = pubs.public_key()
-	#print(kPub)
 
 	#Generacion de la llave privada
 	k = ec.EllipticCurvePrivateNumbers(private_value=d, public_numbers=pubs)
 	kPr = k.private_key()
-	#print(kPr)
 
-	#Generador de hash SHA-1
-	h = hashes.Hash(hashes.SHA1())
-
+	#Tomamos el tiempo en que inicia la ejecución de la firma
+	t0 = default_timer()
 	#Generacion de la firma
 	s = kPr.sign(data=m, signature_algorithm=ec.ECDSA(hashes.SHA1()))
-	ds = utils.decode_dss_signature(s)
+	#ds = utils.decode_dss_signature(s)
 	#Tomamos el tiempo en que termina la ejecución de la firma
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución de la firma el cual es t1-t0
 	t_s_ecdsa_bf.append("{0:0.10f}".format(t1-t0))
-	
+
 
 	#Mensaje
 	#Tomamos el tiempo en que inicia la ejecución de la verificación
@@ -199,14 +192,14 @@ def ecdsa_bf(m):
 	    #print("Firma no valida")
 	    pass
 	#Tomamos el tiempo en que termina la ejecución de la verificación
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución de la verificación el cual es t1-t0
 	t_v_ecdsa_bf.append("{0:0.10f}".format(t1-t0))
 
 def ecdsa_pf(msg):
 	global t_s_ecdsa_pf
 	global t_v_ecdsa_pf
-	
+
 	#Variable que servira para generar la llave secreta
 	pValue = "0FAD06DAA62BA3B25D2FB40133DA757205DE67F5BB0018FEE8C86E1B68C7E75CAA896EB32F1F47C70855836A6D16FCC1466F6D8FBEC67DB89EC0C08B0E996B83538"
 	pValue = int(pValue,16)
@@ -220,9 +213,7 @@ def ecdsa_pf(msg):
 
 	msg = bytes.fromhex(msg)
 
-	#Tomamos el tiempo en que inicia la ejecución de la firma
-	t0 = default_timer()
-	#Se crea la curva eleiptica sobre el campo primo 
+	#Se crea la curva eleiptica sobre el campo primo
 	ECC = ec.SECP521R1()
 
 	#Se genera la llave publica
@@ -238,11 +229,13 @@ def ecdsa_pf(msg):
 	#hashing.update(b"sample")
 	#digest = hashing.finalize()
 
+	#Tomamos el tiempo en que inicia la ejecución de la firma
+	t0 = default_timer()
 	#Se hace la firma
 	leFigme = privKey.sign(data=msg, signature_algorithm=ec.ECDSA(hashes.SHA1()))
-	ds = utils.decode_dss_signature(leFigme)
+	#ds = utils.decode_dss_signature(leFigme)
 	#Tomamos el tiempo en que termina la ejecución de la firma
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución de la verificación el cual es t1-t0
 	t_s_ecdsa_pf.append("{0:0.10f}".format(t1-t0))
 
@@ -257,15 +250,16 @@ def ecdsa_pf(msg):
 		#print("Firma valida")
 		pass
 	#Tomamos el tiempo en que termina la ejecución de la verificación
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución de la verificación el cual es t1-t0
 	t_v_ecdsa_pf.append("{0:0.10f}".format(t1-t0))
 
 
 #Función impresión tabla
 def impresion(vector,t_rsa,t_dsa,t_ecb_b,t_ecb_p):
-	valores = {"Vectores": vector,"RSA_PSS": t_rsa,"DSA": t_dsa, "ECDSA_BF": t_ecb_b, "ECDSA_PF": t_ecb_p}
+	valores = {"Vectores (Bytes)": vector,"RSA_PSS": t_rsa,"DSA": t_dsa, "ECDSA_BF": t_ecb_b, "ECDSA_PF": t_ecb_p}
 	tabla = pd.DataFrame(valores)
+	pd.set_option('display.max_rows', None, 'display.max_columns', None)
 	print(tabla)
 
 def promedio(lista):
@@ -275,7 +269,28 @@ def promedio(lista):
 		suma+=float(valor)
 	return "{0:0.10f}".format(float(suma/cont))
 
+#Calcular promedios por tamaño
+def promedioTamano(tam, tiempo):
+	cont = [0, 0, 0, 0, 0]
+	suma = [0, 0, 0, 0, 0]
+	for i in range(len(tam)):
+		if tam[i] == 128:
+			agregar(tiempo[i], 4, cont, suma)
+		elif tam[i] == 64:
+			agregar(tiempo[i], 3, cont, suma)
+		elif tam[i] == 32:
+			agregar(tiempo[i], 2, cont, suma)
+		elif tam[i] == 16:
+			agregar(tiempo[i], 1, cont, suma)
+		elif tam[i] == 8:
+			agregar(tiempo[i], 0, cont, suma)
+	for i in range(len(suma)):
+		suma[i] = suma[i] / cont[i]
+	return suma
 
+def agregar(v, i, cont, suma):
+	cont[i] += 1
+	suma[i] += float(v)
 
 #Contador de vectores
 cont=0
@@ -298,19 +313,27 @@ t_v_ecdsa_bf=[]	#Verify
 
 vectores=[]
 
-#Leer valor del vector de un archivo 
+#Leer valor del vector de un archivo
 archivo = open('vectores_sign_verify.txt','r')
 for vector in archivo:
 	##Si no es un comentario
 	if(vector.strip('\n')[0]!='#'):
 		cont+=1
-		vectores.append(vector.strip("Msg = ").strip('\n'))
+		vectores.append(len(vector.strip("Msg = ").strip('\n'))//2)
 		rsa_pps(vector.strip("Msg = ").strip('\n'))
 		dsa(vector.strip("Msg = ").strip('\n'))
 		ecdsa_bf(vector.strip("Msg = ").strip('\n'))
 		ecdsa_pf(vector.strip("Msg = ").strip('\n'))
-		
+
 archivo.close()
+
+
+#Guardar salida original
+oldstdout = sys.stdout
+#Crear y abrir archivo
+f = open('Signing.txt', 'w')
+#Redirigir la salida estandar
+sys.stdout = f
 
 print("\n\t\t\t##########Tabla Firma ##########")
 #Impresión tabla cifrado
@@ -320,7 +343,13 @@ print("\nPromedio DSA: ",promedio(t_s_dsa))
 print("\nPromedio ECDSA Binary Field: ",promedio(t_s_ecdsa_bf))
 print("\nPromedio ECDSA Prime Field: ",promedio(t_s_ecdsa_pf))
 
-
+#vaciar el buffer de salida
+sys.stdout.flush()
+#Cerrar archivo y cambiar el archivo
+f.close()
+f = open('Verifying.txt', 'w')
+#Redirigir la salida estandar
+sys.stdout = f
 
 print("\n\t\t\t##########Tabla Verificación ##########")
 #Impresión tabla descifrado
@@ -330,3 +359,36 @@ print("\nPromedio DSA: ",promedio(t_v_dsa))
 print("\nPromedio ECDSA Binary Field: ",promedio(t_v_ecdsa_bf))
 print("\nPromedio ECDSA Prime Field: ",promedio(t_v_ecdsa_pf))
 
+#vaciar el buffer de salida
+sys.stdout.flush()
+#Cerrar archivo y volver salida original
+f.close()
+sys.stdout = oldstdout
+
+#Graficado de firmas
+pl.figure(1)
+pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_s_rsa_pps), label='RSA-PPS')
+pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_s_dsa), label='DSA')
+pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_s_ecdsa_pf), label='ECDSA Primos')
+pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_s_ecdsa_bf), label='ECDSA Binarios')
+pl.xlabel("Tamaño del mensaje firmado")
+pl.ylabel("Tiempo de procesamiento")
+pl.title("Algoritmos de firma digital")
+pl.legend()
+#Guardar grafico con los resultados
+pl.savefig("Signing.png")
+
+#Graficado de firmas
+pl.figure(2)
+pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_v_rsa_pps), label='RSA-PPS')
+pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_v_dsa), label='DSA')
+pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_v_ecdsa_pf), label='ECDSA Primos')
+pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_v_ecdsa_bf), label='ECDSA Binarios')
+pl.xlabel("Tamaño del mensaje obtenido")
+pl.ylabel("Tiempo de procesamiento")
+pl.title("Verificacion de Firma digital")
+pl.legend()
+#Guardar grafico con los resultados
+pl.savefig("Veryfying.png")
+
+print("Se han generado los resultados de los algoritmos de Firma y Verificación")
