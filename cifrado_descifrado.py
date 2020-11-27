@@ -56,7 +56,7 @@ def aes_cbc(PLAINTEXT):
 
 	h = ct_bytes.hex()
 	#Guardamos el valor de cifrado para el texto en claro
-	c_aes_cbc.append(h)
+	c_aes_cbc.append(len(h))
 
 	########Descifrado
 	#Tomamos el tiempo en que inicia la ejecución del descifrado
@@ -94,7 +94,7 @@ def aes_ecb(pTextAES):
 	t_c_aes_ecb.append("{0:0.10f}".format(t1-t0))
 
 	
-	c_aes_ecb.append(cyphertext.hex())
+	c_aes_ecb.append(len(cyphertext.hex()))
 
 	#####Descifrado
 	#Tomamos el tiempo en que inicia la ejecución del cifrado
@@ -137,7 +137,7 @@ def rsa_oaep(message):
 	t_c_rsa_oaep.append("{0:0.10f}".format(t1-t0))
 
 	h=ciphertext.hex()
-	c_rsa_oaep.append(h)
+	c_rsa_oaep.append(len(h))
 
 
 	###Descifrado
@@ -170,6 +170,27 @@ def promedio(lista):
 		suma+=float(valor)
 	return "{0:0.10f}".format(float(suma/cont))
 
+#Calcular promedios por tamaño
+def promedioTamano(tam, tiempo):
+	cont = [0, 0, 0, 0]
+	suma = [0, 0, 0, 0]
+	for i in range(len(tam)):
+		
+		if tam[i] == 512:
+			agregar(tiempo[i], 3, cont, suma)
+		elif tam[i] == 384:
+			agregar(tiempo[i], 2, cont, suma)
+		elif tam[i] == 256:
+			agregar(tiempo[i], 1, cont, suma)
+		elif tam[i] == 64:
+			agregar(tiempo[i], 0, cont, suma)
+	for i in range(len(suma)):
+		suma[i] = suma[i] / cont[i]
+	return suma
+
+def agregar(v, i, cont, suma):
+	cont[i] += 1
+	suma[i] += float(v)
 
 
 #Contador de vectores
@@ -224,9 +245,9 @@ sys.stdout = oldstdout
 
 #Graficar resultados
 pl.figure(1)
-pl.plot(list(map(float, vectores)), list(map(float, t_c_aes_cbc)), label='AES-CBC')
-pl.plot(list(map(float, vectores)), list(map(float, t_c_aes_ecb)), label='AES-ECB')
-pl.plot(list(map(float, vectores)), list(map(float, t_c_rsa_oaep)), label='RSA-OAEP')
+pl.plot([64, 256, 384, 512], promedioTamano(vectores, t_c_aes_cbc), label='AES-CBC')
+pl.plot([64, 256, 384, 512], promedioTamano(vectores, t_c_aes_ecb), label='AES-ECB')
+pl.plot([64, 256, 384, 512], promedioTamano(vectores, t_c_rsa_oaep), label='RSA-OAEP')
 pl.xlabel("Tamaño del mensaje")
 pl.ylabel("Tiempo de procesamiento")
 pl.title("Funciones cifrado")
@@ -256,10 +277,9 @@ sys.stdout = oldstdout
 
 pl.figure(2)
 #Graficar resultados
-pl.plot(list(map(float, vectores)), list(map(float, t_d_aes_cbc)), label='AES-CBC')
-pl.plot(list(map(float, vectores)), list(map(float, t_d_aes_ecb)), label='AES-ECB')
-pl.plot(list(map(float, vectores)), list(map(float, t_d_rsa_oaep)), label='RSA-OAEP')
-pl.xlabel("Tamaño del mensaje")
+pl.plot([64, 256, 384, 512], promedioTamano(vectores, t_d_aes_cbc), label='AES-CBC')
+pl.plot([64, 256, 384, 512], promedioTamano(vectores, t_d_aes_ecb), label='AES-ECB')
+pl.plot([64, 256, 384, 512], promedioTamano(vectores, t_d_rsa_oaep), label='RSA-OAEP')
 pl.ylabel("Tiempo de procesamiento")
 pl.title("Funciones descifrado")
 pl.legend()
