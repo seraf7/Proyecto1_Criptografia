@@ -123,7 +123,7 @@ oldstdout = sys.stdout
 f = open('Hashing.txt', 'w')
 #Redirigir la salida estandar
 sys.stdout = f
-
+print("\n\t\t\t##########Tabla de algoritmos hash ##########")
 impresion()
 print("\nPromedio SHA2_384: ",promedio(t_SHA2_384))
 print("\nPromedio SHA2_512: ",promedio(t_SHA2_512))
@@ -146,6 +146,6 @@ pl.ylabel("Tiempo de procesamiento")
 pl.title("Funciones hash")
 pl.legend()
 #Guardar grafico con los resultados
-pl.savefig("Hash.png")
+pl.savefig("Hashing.png")
 
 print("Se han generado los resultados de los algoritmos de Hash")

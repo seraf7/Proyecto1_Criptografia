@@ -373,12 +373,12 @@ pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_s_ecdsa_pf), label='ECD
 pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_s_ecdsa_bf), label='ECDSA Binarios')
 pl.xlabel("Tamaño del mensaje firmado")
 pl.ylabel("Tiempo de procesamiento")
-pl.title("Algoritmos de firma digital")
+pl.title("Algoritmos de Firma digital")
 pl.legend()
 #Guardar grafico con los resultados
 pl.savefig("Signing.png")
 
-#Graficado de firmas
+#Graficado de verificaciones
 pl.figure(2)
 pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_v_rsa_pps), label='RSA-PPS')
 pl.plot([8, 16, 32, 64, 128], promedioTamano(vectores, t_v_dsa), label='DSA')
