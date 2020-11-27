@@ -6,6 +6,7 @@
 #AES_CBC, AES_ECB, RSA_OAEP 
 #Muestra la tabla de los tiempos de cada uno de los algoritmos por los vectores de prueba
 #Además del promedio de tiempo
+import pylab as pl
 import sys
 import os 
 import pandas as pd
@@ -138,6 +139,7 @@ def rsa_oaep(message):
 	h=ciphertext.hex()
 	c_rsa_oaep.append(h)
 
+
 	###Descifrado
 	#Tomamos el tiempo en que inicia la ejecución del descifrado
 	t0 = default_timer()
@@ -157,6 +159,8 @@ def rsa_oaep(message):
 def impresion(vector,t_cbc,t_ecb,t_rsa):
 	valores = {"Vectores": vector,"AES_CBC": t_cbc,"AES_ECB": t_ecb, "RSA_OAEP": t_rsa}
 	tabla = pd.DataFrame(valores)
+    #Imprimir tabla completa
+	pd.set_option('display.max_rows', None, 'display.max_columns', None)
 	print(tabla)
 
 def promedio(lista):
@@ -183,6 +187,7 @@ t_c_aes_ecb=[]	#Cifrado
 t_d_aes_ecb=[]	#Descifrado
 t_c_rsa_oaep=[]	#Cifrado
 t_d_rsa_oaep=[]	#Descifrado
+#Tamaño de los vectores de prueba
 vectores=[]
 
 #Leer valor del vector de un archivo 
@@ -191,25 +196,73 @@ for vector in archivo:
 	##Si no es un comentario
 	if(vector.strip('\n')[0]!='#'):
 		cont+=1
-		vectores.append(vector.strip("plain = ").strip('\n'))
+		vectores.append(len(vector.strip("plain = ").strip('\n'))*4)
 		aes_cbc(vector.strip("plain = ").strip('\n'))
 		aes_ecb(vector.strip("plain = ").strip('\n'))
 		rsa_oaep(vector.strip("plain = ").strip('\n'))
 archivo.close()
 
 
+#Guardar salida original
+oldstdout = sys.stdout
+#Crear y abrir archivo
+f = open('Cifrado.txt', 'w')
+#Redirigir la salida estandar
+sys.stdout = f
 
-print("\n\t\t\t##########Tabla Cifrado##########")
 #Impresión tabla cifrado
 impresion(vectores,t_c_aes_cbc,t_c_aes_ecb,t_c_rsa_oaep)
 print("\nPromedio AES_CBC: ",promedio(t_c_aes_cbc))
 print("\nPromedio AES_ECB: ",promedio(t_c_aes_ecb))
 print("\nPromedio RSA_OAEP: ",promedio(t_c_rsa_oaep))
 
+#vaciar el buffer de salida
+sys.stdout.flush()
+#Cerrar archivo y volver salida original
+f.close()
+sys.stdout = oldstdout
 
-print("\n\t\t\t##########Tabla Descifrado##########")
+#Graficar resultados
+pl.figure(1)
+pl.plot(list(map(float, vectores)), list(map(float, t_c_aes_cbc)), label='AES-CBC')
+pl.plot(list(map(float, vectores)), list(map(float, t_c_aes_ecb)), label='AES-ECB')
+pl.plot(list(map(float, vectores)), list(map(float, t_c_rsa_oaep)), label='RSA-OAEP')
+pl.xlabel("Tamaño del mensaje")
+pl.ylabel("Tiempo de procesamiento")
+pl.title("Funciones cifrado")
+pl.legend()
+#Guardar grafico con los resultados
+pl.savefig("Cifrado.png")
+
+print("Se han generado los resultados de los algoritmos de Cifrado")
+
+#Guardar salida original
+oldstdout = sys.stdout
+#Crear y abrir archivo
+f = open('Descifrado.txt', 'w')
+#Redirigir la salida estandar
+sys.stdout = f
+
 #Impresión tabla descifrado
-impresion(c_aes_cbc,t_d_aes_cbc,t_d_aes_ecb,t_d_rsa_oaep)
+impresion(vectores,t_d_aes_cbc,t_d_aes_ecb,t_d_rsa_oaep)
 print("\nPromedio AES_CBC: ",promedio(t_d_aes_cbc))
 print("\nPromedio AES_ECB: ",promedio(t_d_aes_ecb))
 print("\nPromedio RSA_OAEP: ",promedio(t_d_rsa_oaep))
+#vaciar el buffer de salida
+sys.stdout.flush()
+#Cerrar archivo y volver salida original
+f.close()
+sys.stdout = oldstdout
+
+pl.figure(2)
+#Graficar resultados
+pl.plot(list(map(float, vectores)), list(map(float, t_d_aes_cbc)), label='AES-CBC')
+pl.plot(list(map(float, vectores)), list(map(float, t_d_aes_ecb)), label='AES-ECB')
+pl.plot(list(map(float, vectores)), list(map(float, t_d_rsa_oaep)), label='RSA-OAEP')
+pl.xlabel("Tamaño del mensaje")
+pl.ylabel("Tiempo de procesamiento")
+pl.title("Funciones descifrado")
+pl.legend()
+#Guardar grafico con los resultados
+pl.savefig("Descifrado.png")
+print("Se han generado los resultados de los algoritmos de Descifrado")
