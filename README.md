@@ -25,6 +25,7 @@ para sistemas Linux.
 Es necesario tener instalado python 3.
 
 Se puede ejecutar el programa general con el siguiente comando.
+
 Para sistemas Windows:
 *python main.py*
 
