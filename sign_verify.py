@@ -335,7 +335,7 @@ f = open('Signing.txt', 'w')
 #Redirigir la salida estandar
 sys.stdout = f
 
-print("\n\t\t\t##########Tabla Firma ##########")
+print("\n\t\t\t##########Tabla de Firma Digital##########")
 #Impresión tabla cifrado
 impresion(vectores,t_s_rsa_pps,t_s_dsa,t_s_ecdsa_bf,t_s_ecdsa_pf)
 print("\nPromedio RSA-PSS: ",promedio(t_s_rsa_pps))
@@ -351,7 +351,7 @@ f = open('Verifying.txt', 'w')
 #Redirigir la salida estandar
 sys.stdout = f
 
-print("\n\t\t\t##########Tabla Verificación ##########")
+print("\n\t\t\t##########Tabla de Verificación ##########")
 #Impresión tabla descifrado
 impresion(vectores,t_v_rsa_pps,t_v_dsa,t_v_ecdsa_bf,t_v_ecdsa_pf)
 print("\nPromedio RSA-PSS: ",promedio(t_v_rsa_pps))

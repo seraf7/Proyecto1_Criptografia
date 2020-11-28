@@ -3,12 +3,12 @@
 #García Racilla Sandra
 #Sánchez Escobar Fernando
 #Ejecuta todos los algoritmos de cifrado y descifrado
-#AES_CBC, AES_ECB, RSA_OAEP 
+#AES_CBC, AES_ECB, RSA_OAEP
 #Muestra la tabla de los tiempos de cada uno de los algoritmos por los vectores de prueba
 #Además del promedio de tiempo
 import pylab as pl
 import sys
-import os 
+import os
 import pandas as pd
 #Importamos la función default_timer de la librería timeit, esta nos ayudará a
 #tomar los tiempos de ejcución
@@ -42,7 +42,7 @@ def aes_cbc(PLAINTEXT):
 
 	PLAINTEXT = convBytes(PLAINTEXT)
 
-	########Cifrado	
+	########Cifrado
 	#Tomamos el tiempo en que inicia la ejecución del cifrado
 	t0 = default_timer()
 	#Creacion del cifrador
@@ -50,7 +50,7 @@ def aes_cbc(PLAINTEXT):
 	#Cirfado de una cadena de bytes, usa proceso de padding en el mensaje
 	ct_bytes = cipher.encrypt(pad(PLAINTEXT, AES.block_size))
 	#Tomamos el tiempo en que termina la ejecución del cifrado
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución del cifrado el cual es t1-t0
 	t_c_aes_cbc.append("{0:0.10f}".format(t1-t0))
 
@@ -66,15 +66,15 @@ def aes_cbc(PLAINTEXT):
 	#Proceso de descifrado, también se remueve el padding del mensaje
 	msj = unpad(descipher.decrypt(ct_bytes), AES.block_size)
 	#Tomamos el tiempo en que termina la ejecución del descifrado
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución del descifrado el cual es t1-t0
 	t_d_aes_cbc.append("{0:0.10f}".format(t1-t0))
 
 
 #Algoritmo AES_ECB
 def aes_ecb(pTextAES):
-	global c_aes_ecb	
-	global t_c_aes_ecb	
+	global c_aes_ecb
+	global t_c_aes_ecb
 	global t_d_aes_ecb
 	#Inicializamos llave de 256 bits
 	kAES = "0000000000000000000000000000000000000000000000000000000000000000"
@@ -89,29 +89,29 @@ def aes_ecb(pTextAES):
 	cipher = AES.new(kAES, AES.MODE_ECB)
 	cyphertext = cipher.encrypt(pad(pTextAES,AES.block_size))
 	#Tomamos el tiempo en que termina la ejecución del cifrado
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución del cifrado el cual es t1-t0
 	t_c_aes_ecb.append("{0:0.10f}".format(t1-t0))
 
-	
+
 	c_aes_ecb.append(len(cyphertext.hex()))
 
 	#####Descifrado
 	#Tomamos el tiempo en que inicia la ejecución del cifrado
-	t0 = default_timer() 
+	t0 = default_timer()
 	#Objeto AES que servira para el cifrado y descifrado
 	cipher2 = AES.new(kAES, AES.MODE_ECB)
 	msg = unpad(cipher2.decrypt(cyphertext),AES.block_size)
 	#Tomamos el tiempo en que termina la ejecución del cifrado
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución del descifrado el cual es t1-t0
 	t_d_aes_ecb.append("{0:0.10f}".format(t1-t0))
 
 
 #Algoritmo RSA_OAEP
 def rsa_oaep(message):
-	global c_rsa_oaep	
-	global t_c_rsa_oaep	
+	global c_rsa_oaep
+	global t_c_rsa_oaep
 	global t_d_rsa_oaep
 	#Damos formato a mensaje
 	message	= bytes.fromhex(message)
@@ -122,7 +122,7 @@ def rsa_oaep(message):
 	np2=int("CCF876B8B473F7E05C9551EE3F7ECA0C57CB542E0849B663026CB8A2896E75B80CC6D2415425DD5987ECB47AE7DCD091BA3F609B0FE02E969C4E7DC29E36437D",16)
 	np1=int("B5D49FA4F78255C12DD125EF76EB039DA81CECF80C314E1E067706E200101117EF3D03479EEC26DBFA7355CD2913F3AD7F465D6F1424D8A8506A1E8852606A39",16)
 	coef=int("036F02D351D7831238E5361BAC0D60888D0F2AB38B0DED7A14A90E2CF1D4D3BD72395F9667ED279889987808288FFF2739927A2868F01A3036BD85D44DDA9FD5",16)
-	
+
 	###Cifrado
 	#Tomamos el tiempo en que inicia la ejecución del cifrado
 	#RSA.construct(n,e,d,n(p)1,n(p)2,coef)
@@ -130,9 +130,9 @@ def rsa_oaep(message):
 	t0 = default_timer()
 	#Creación objeto de llave RSA
 	cipher = PKCS1_OAEP.new(key_object)
-	ciphertext = cipher.encrypt(message) 
+	ciphertext = cipher.encrypt(message)
 	#Tomamos el tiempo en que termina la ejecución del cifrado
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución del cifrado el cual es t1-t0
 	t_c_rsa_oaep.append("{0:0.10f}".format(t1-t0))
 
@@ -149,7 +149,7 @@ def rsa_oaep(message):
 	cipher = PKCS1_OAEP.new(key_object2)
 	message = cipher.decrypt(ciphertext)
 	#Tomamos el tiempo en que termina la ejecución del descifrado
-	t1 = default_timer() 
+	t1 = default_timer()
 	#Se imprime el tiempo total de ejecución del descifrado el cual es t1-t0
 	t_d_rsa_oaep.append("{0:0.10f}".format(t1-t0))
 
@@ -175,7 +175,7 @@ def promedioTamano(tam, tiempo):
 	cont = [0, 0, 0, 0]
 	suma = [0, 0, 0, 0]
 	for i in range(len(tam)):
-		
+
 		if tam[i] == 512:
 			agregar(tiempo[i], 3, cont, suma)
 		elif tam[i] == 384:
@@ -211,7 +211,7 @@ t_d_rsa_oaep=[]	#Descifrado
 #Tamaño de los vectores de prueba
 vectores=[]
 
-#Leer valor del vector de un archivo 
+#Leer valor del vector de un archivo
 archivo = open('vectores_cifrado_descifrado.txt','r')
 for vector in archivo:
 	##Si no es un comentario
@@ -232,6 +232,7 @@ f = open('Cifrado.txt', 'w')
 sys.stdout = f
 
 #Impresión tabla cifrado
+print("\n\t\t\t##########Tabla Cifrado##########")
 impresion(vectores,t_c_aes_cbc,t_c_aes_ecb,t_c_rsa_oaep)
 print("\nPromedio AES_CBC: ",promedio(t_c_aes_cbc))
 print("\nPromedio AES_ECB: ",promedio(t_c_aes_ecb))
@@ -265,6 +266,7 @@ f = open('Descifrado.txt', 'w')
 sys.stdout = f
 
 #Impresión tabla descifrado
+print("\n\t\t\t##########Tabla de Descifrado##########")
 impresion(vectores,t_d_aes_cbc,t_d_aes_ecb,t_d_rsa_oaep)
 print("\nPromedio AES_CBC: ",promedio(t_d_aes_cbc))
 print("\nPromedio AES_ECB: ",promedio(t_d_aes_ecb))
